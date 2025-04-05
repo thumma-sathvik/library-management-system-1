@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   LineChart as LineChartIcon,
   Library, 
@@ -73,6 +73,14 @@ const Reports = () => {
     
     return movingAvg;
   };
+
+  const memoizedFetchAnalytics = useCallback(() => {
+    fetchAnalytics();
+  }, []); // Add dependencies if fetchAnalytics uses any props or state
+
+  useEffect(() => {
+    memoizedFetchAnalytics();
+  }, [memoizedFetchAnalytics]);
 
   // Enhanced loading state
   if (loading) {

@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -99,9 +100,12 @@ const Login = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <img
+          <Image
             src="/backend.png"
             alt="Library Logo"
+            width={350}
+            height={160}
+            priority={true}
             className="h-40 w-[350px] object-contain"
           />
         </div>
@@ -137,9 +141,12 @@ const Login = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       {/* Logo Section */}
       <div className="mb-8 transform hover:scale-105 transition-transform duration-300">
-        <img
+        <Image
           src="/backend.png"
           alt="Library Logo"
+          width={350}
+          height={160}
+          priority={true}
           className="h-40 w-[350px] object-contain"
         />
       </div>

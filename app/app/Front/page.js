@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react';
+import Image from 'next/image';
 
 const backgrounds = [
   {
@@ -67,9 +68,12 @@ const Front = () => {
           <div className="group w-full max-w-sm bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
             <div className="p-8">
               <div className="bg-blue-50 rounded-full p-6 mb-6 w-32 h-32 mx-auto">
-                <img 
-                  src="./login.png"
+                <Image 
+                  src="/login.png"
                   alt="User login"
+                  width={128}
+                  height={128}
+                  priority={true}
                   className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                 />
               </div>
@@ -92,9 +96,12 @@ const Front = () => {
           <div className="group w-full max-w-sm bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
             <div className="p-8">
               <div className="bg-blue-50 rounded-full p-6 mb-6 w-32 h-32 mx-auto">
-                <img 
-                  src="./user.png"
+                <Image 
+                  src="/user.png"
                   alt="Admin login"
+                  width={128}
+                  height={128}
+                  priority={true}
                   className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                 />
               </div>

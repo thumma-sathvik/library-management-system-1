@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -56,6 +57,15 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-center text-gray-900">Sign In</h2>
+
+        <Image 
+          src="/path-to-your-image.jpg"
+          alt="Login image"
+          width={500}
+          height={300}
+          priority={true}
+          className="your-existing-classes"
+        />
 
         {/* Form */}
         <form onSubmit={submit} className="space-y-6">

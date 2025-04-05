@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, Clock, Building2, Book, User, ShoppingCart, X, Menu, Search, Star, BookOpen, CircleCheck, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Helper function to get full image path
 const getFullImagePath = (imagePath) => {
@@ -33,10 +34,12 @@ const SearchResults = ({ results = [], isVisible, isScrolled, onSelect }) => {
             <div className="flex items-start p-4 space-x-4">
               <div className="flex-shrink-0">
                 {book.image ? (
-                  <img
+                  <Image
                     src={getFullImagePath(book.image)}
                     alt={book.title}
-                    className="w-16 h-20 object-cover rounded-md shadow-sm"
+                    width={64}
+                    height={80}
+                    className="object-cover rounded-md shadow-sm"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = '/placeholder-book.png';
@@ -293,10 +296,12 @@ const BookCard = ({ id, adminId, title, price, rating, imgSrc, bestseller, descr
     onClick={() => onCardClick(title, id, adminId)}
   >
     <div className="relative overflow-hidden rounded-t-xl">
-      <img
+      <Image
         src={imgSrc || "/api/placeholder/300/220"}
         alt={title}
-        className="w-full h-[220px] object-cover transition-transform duration-300 hover:scale-105"
+        width={300}
+        height={220}
+        className="object-cover transition-transform duration-300 hover:scale-105"
       />
       {bestseller && (
         <div className="absolute top-3 right-3 bg-gradient-to-r from-gray-800 to-black text-white text-sm px-3 py-1 rounded-full font-medium shadow-md">
