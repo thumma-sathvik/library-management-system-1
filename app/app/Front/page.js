@@ -119,6 +119,13 @@ const Front = () => {
               </button>
             </div>
           </div>
+          <Image 
+            src="/example.png" 
+            alt="Example" 
+            width={500}   // adjust width  
+            height={300}  // adjust height  
+            priority={true} // if image is critical for LCP
+          />
         </div>
       </main>
     </div>

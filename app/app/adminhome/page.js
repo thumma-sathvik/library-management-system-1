@@ -4,8 +4,14 @@ import Image from 'next/image';
 import axios from 'axios';
 import Link from 'next/link';
 import { 
-  BookOpen, Users, ShoppingCart, Plus, ArrowRight
+  BookOpen, 
+  Users, 
+  ShoppingCart, 
+  Plus, 
+  ArrowRight
+  // Removed unused icons: BarChart2, Edit, Trash2, Search
 } from 'lucide-react';
+// Removed unused router imports
 
 // TabPanel Component
 const TabPanel = ({ children, value, index }) => (
@@ -352,6 +358,8 @@ const UsersTable = ({ users, orders }) => {
 
 // Main AdminDashboard Component
 const AdminDashboard = () => {
+  // Removed unused router variables
+
   const [activeTab, setActiveTab] = useState(0);
   const [books, setBooks] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -467,7 +475,9 @@ const AdminDashboard = () => {
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
             Welcome back, {admin?.Library_name || 'Admin'}
           </h1>
-          <p className="text-gray-600">Here's what's happening with your library today</p>
+          <p className="text-gray-600">
+            Here&apos;s what&apos;s happening with your library today
+          </p>
         </div>
 
         {/* Quick Action Button */}

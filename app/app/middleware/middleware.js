@@ -22,8 +22,9 @@ export default async function middleware(req) {
   try {
     await jwtVerify(cookie.value, secret);
     return NextResponse.next();
-  } catch (error) {
-    console.log('Invalid JWT token:', error.message);
+  } catch {
+    // Removed unused 'error' parameter since we're not using it
+    console.log('Invalid JWT token');
     return NextResponse.redirect(new URL('/Userlogin', req.url));
   }
 }

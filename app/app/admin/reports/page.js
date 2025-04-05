@@ -38,8 +38,8 @@ const Reports = () => {
   const COLORS = ['#4F46E5', '#06B6D4', '#F59E0B', '#EC4899', '#10B981', '#8B5CF6'];
 
   useEffect(() => {
-    fetchAnalytics();
-  }, [timeFilter]);
+  fetchAnalytics();
+}, [fetchAnalytics]);
 
   const fetchAnalytics = useCallback(async () => {
     setLoading(true);

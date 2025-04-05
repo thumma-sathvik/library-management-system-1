@@ -11,8 +11,11 @@ const BorrowingRecords = () => {
   const [adminId, setAdminId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
-  const [sortField, setSortField] = useState('borrowedAt');
-  const [sortDirection, setSortDirection] = useState('desc');
+  
+  // Use constants for sortField and sortDirection since they are not modified
+  const sortField = 'borrowedAt';
+  const sortDirection = 'desc';
+  
   const [returningBook, setReturningBook] = useState(null);
 
   // Fetch admin data and orders

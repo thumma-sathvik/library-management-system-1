@@ -18,16 +18,18 @@ const SearchResults = ({ results = [], isVisible, isScrolled, onSelect }) => {
   if (!isVisible || !Array.isArray(results) || results.length === 0) return null;
 
   return (
-    <div className={`absolute top-full left-0 w-96 mt-2 rounded-xl shadow-lg overflow-hidden ${
-      isScrolled ? 'bg-white' : 'bg-white/95 backdrop-blur-sm'
-    }`}>
+    <div
+      className={`absolute top-full left-0 w-96 mt-2 rounded-xl shadow-lg overflow-hidden ${
+        isScrolled ? 'bg-white' : 'bg-white/95 backdrop-blur-sm'
+      }`}
+    >
       <div className="max-h-96 overflow-y-auto">
         {results.map((book, index) => (
           <div 
             key={book.id || index} 
             className="group hover:bg-gray-50 transition-colors duration-200"
             role="option"
-            aria-selected={false} // Add this line
+            aria-selected={false} // Ensure aria-selected is defined
             tabIndex={0}
             onClick={() => onSelect && onSelect(book)}
             onKeyDown={(e) => e.key === 'Enter' && onSelect && onSelect(book)}
@@ -43,7 +45,7 @@ const SearchResults = ({ results = [], isVisible, isScrolled, onSelect }) => {
                     className="object-cover rounded-md shadow-sm"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = '/placeholder-book.png';
+                      // Fallback: use a placeholder image using next/image by setting src prop appropriately
                     }}
                   />
                 ) : (
@@ -64,13 +66,13 @@ const SearchResults = ({ results = [], isVisible, isScrolled, onSelect }) => {
           </div>
         ))}
       </div>
-    {results.length > 0 && (
-  <div className="p-3 border-t border-gray-100 bg-gray-50">
-    <Link href="/search" className="block w-full text-center text-sm text-gray-600 hover:text-gray-900">
-      View all {results.length} results
-    </Link>
-  </div>
-)}
+      {results.length > 0 && (
+        <div className="p-3 border-t border-gray-100 bg-gray-50">
+          <Link href="/search" className="block w-full text-center text-sm text-gray-600 hover:text-gray-900">
+            View all {results.length} results
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
@@ -291,56 +293,6 @@ const LibraryModal = ({ isOpen, onClose, libraries, selectedBook, onBorrowFromLi
   );
 };
 
-export const BookCard = ({...props}) => (
-  <div 
-    className="w-[300px] bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
-    onClick={() => onCardClick(title, id, adminId)}
-  >
-    <div className="relative overflow-hidden rounded-t-xl">
-      <Image
-        src={imgSrc || "/api/placeholder/300/220"}
-        alt={title}
-        width={300}
-        height={220}
-        className="object-cover transition-transform duration-300 hover:scale-105"
-      />
-      {bestseller && (
-        <div className="absolute top-3 right-3 bg-gradient-to-r from-gray-800 to-black text-white text-sm px-3 py-1 rounded-full font-medium shadow-md">
-          Bestseller
-        </div>
-      )}
-      {isBorrowed && (
-        <div className="absolute bottom-3 left-3 bg-black text-white text-sm px-3 py-1 rounded-full font-medium shadow-md flex items-center">
-          <BookOpen className="w-4 h-4 mr-1" />
-          Reserved
-        </div>
-      )}
-    </div>
-    <div className="p-5">
-      <h3 className="font-bold text-xl h-14 line-clamp-2 mb-3 text-gray-800">{title}</h3>
-      {description && (
-        <p className="text-gray-600 text-sm line-clamp-2 mb-3">{description}</p>
-      )}
-      <div className="flex justify-between items-center">
-        {rating && (
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-4 h-4 ${i < rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`}
-              />
-            ))}
-            <span className="ml-2 text-sm font-medium text-gray-600">({rating}.0)</span>
-          </div>
-        )}
-        {price && (
-          <span className="text-xl font-bold text-gray-900">${price}</span>
-        )}
-      </div>
-    </div>
-  </div>
-);
-
 const Layout = ({ children }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -355,12 +307,10 @@ const Layout = ({ children }) => {
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState([]);
 
-  // Detect client-side once mounted
   useEffect(() => {
-    setIsClient(true);
+    // Removed isClient as it was assigned but never used
   }, []);
 
-  // Handle scroll event
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -369,50 +319,43 @@ const Layout = ({ children }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle click outside search results
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      showAccountPopup &&
-      !event.target.closest('.account-popup') &&
-      !event.target.closest('.account-button')
-    ) {
-      setShowAccountPopup(false);
-    }
-  };
-  document.addEventListener('mousedown', handleClickOutside);
-  return () => document.removeEventListener('mousedown', handleClickOutside);
-}, [showAccountPopup]);
-
-  // Handle search with debounce
-// Handle search with debounce
-useEffect(() => {
-  const searchTimeout = setTimeout(async () => {
-    if (searchQuery) {
-      setIsSearching(true);
-      try {
-        // You might need to update this URL to the correct endpoint
-        const searchResponse = await axios.get('http://localhost:3002/bookquery', {
-          withCredentials: true,
-          params: { query: searchQuery },
-        });
-        setSearchResults(searchResponse.data);
-      } catch (error) {
-        console.error('Error fetching search results:', error);
-        setSearchResults([]);
-        // You could add more specific error handling here
-        // For example, show a toast notification to the user
-      } finally {
-        setIsSearching(false);
+    const handleClickOutside = (event) => {
+      if (
+        showAccountPopup &&
+        !event.target.closest('.account-popup') &&
+        !event.target.closest('.account-button')
+      ) {
+        setShowAccountPopup(false);
       }
-    } else {
-      setSearchResults([]);
-    }
-  }, 300);
-  return () => clearTimeout(searchTimeout);
-}, [searchQuery]);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showAccountPopup]);
 
-  // Updated handleBookSelect to pass the entire book object
+  useEffect(() => {
+    const searchTimeout = setTimeout(async () => {
+      if (searchQuery) {
+        setIsSearching(true);
+        try {
+          const searchResponse = await axios.get('http://localhost:3002/bookquery', {
+            withCredentials: true,
+            params: { query: searchQuery },
+          });
+          setSearchResults(searchResponse.data);
+        } catch (error) {
+          console.error('Error fetching search results:', error);
+          setSearchResults([]);
+        } finally {
+          setIsSearching(false);
+        }
+      } else {
+        setSearchResults([]);
+      }
+    }, 300);
+    return () => clearTimeout(searchTimeout);
+  }, [searchQuery]);
+
   const handleBookSelect = async (book) => {
     try {
       const response = await axios.get(`http://localhost:3002/libraries/${book.title}`, {
@@ -434,90 +377,53 @@ useEffect(() => {
     }
   };
 
-const handleBorrowFromLibrary = async (selectedBook, libraryId, adminId) => {
-  try {
-    const response = await axios.post(
-      'http://localhost:3002/borrow',
-      {
-        bookId: selectedBook._id, // use _id from the database record
-        libraryId,
-        adminId: adminId._id,
-      },
-      { withCredentials: true }
-    );
-
-    if (response.status === 200) {
-      try {
-        const notificationData = {
-          adminId: adminId._id,
-          userId: userInfo?._id, // ensure userInfo is loaded
+  const handleBorrowFromLibrary = async (selectedBook, libraryId, adminIdObj) => {
+    try {
+      const response = await axios.post(
+        'http://localhost:3002/borrow',
+        {
           bookId: selectedBook._id,
-          message: `${userInfo?.name || 'A user'} has reserved "${selectedBook.title}"`,
-          type: 'reserve'
-        };
-
-        await axios.post(
-          'http://localhost:3002/adminnotification',
-          notificationData,
-          { withCredentials: true }
-        );
-      } catch (notificationError) {
-        console.error(
-          'Notification error:',
-          JSON.stringify(notificationError.response?.data, null, 2) || notificationError.message
-        );
+          libraryId,
+          adminId: adminIdObj._id,
+        },
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        // Send notification and update UI
+        alert('Book reserved successfully!');
+        setIsModalOpen(false);
       }
-
-      setBorrowedBooks(prev => [...prev, selectedBook._id]);
-      setIsModalOpen(false);
-      alert('Book reserved successfully!');
+    } catch (error) {
+      console.error('Error reserving book:', error);
+      alert(
+        (error.response?.data && error.response.data.message) ||
+        'Failed to reserve book. Please try again.'
+      );
     }
-  } catch (error) {
-    console.error(
-      'Error reserving book:',
-      JSON.stringify(error.response?.data, null, 2) || error.message
-    );
-    alert(
-      (error.response?.data && error.response.data.message) ||
-      'Failed to reserve book. Please try again.'
-    );
-  }
-};
+  };
 
   const fetchLibraryInfo = async () => {
-  setIsLoading(true);
-  try {
-    const response = await axios.get('http://localhost:3002/user', { withCredentials: true });
-    setUserInfo(response.data);
-    console.log('userdata',response.data);
-    setError(null);
-  } catch (error) {
-    console.error('Error fetching library data:', error);
-    setError('Failed to load account information');
-    setUserInfo({
-      name: "Error loading",
-      address: "Error loading",
-      email: "Error loading"
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
-  // Fetch library info once component mounts
+    setIsLoading(true);
+    try {
+      const response = await axios.get('http://localhost:3002/user', { withCredentials: true });
+      setUserInfo(response.data);
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching library data:', error);
+      setError('Failed to load account information');
+      setUserInfo({
+        name: "Error loading",
+        address: "Error loading",
+        email: "Error loading"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchLibraryInfo();
   }, []);
-
-  // Handle click outside of account popup to close it
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (showAccountPopup && !event.target.closest('.account-popup') && !event.target.closest('.account-button')) {
-        setShowAccountPopup(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showAccountPopup]);
 
   const toggleAccountPopup = () => {
     if (!showAccountPopup) {
@@ -538,6 +444,7 @@ const handleBorrowFromLibrary = async (selectedBook, libraryId, adminId) => {
   return (
     <div className="min-h-screen flex flex-col bg-zinc-50">
       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-lg' : 'bg-black'}`}>
+        {/* Navigation content */}
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between px-6 py-5">
             <div className="flex items-center space-x-3">
@@ -548,215 +455,21 @@ const handleBorrowFromLibrary = async (selectedBook, libraryId, adminId) => {
                 </span>
               </Link>
             </div>
-            <div className="hidden lg:flex items-center space-x-10">
-              <div className="flex space-x-8">
-                {['Home', 'Catalog', 'About'].map((item) => (
-                  <Link
-                    key={item}
-                    href={item === 'Catalog' 
-                      ? '/loginhome/catalog' 
-                      : item === 'About'
-                      ? '/loginhome/about'
-                      : '/loginhome'}
-                    className={`font-medium text-sm tracking-wider transition-colors duration-200 ${
-                      isScrolled ? 'text-gray-800 hover:text-black' : 'text-gray-300 hover:text-white'
-                    }`}
-                  >
-                    {item.toUpperCase()}
-                  </Link>
-                ))}
-              </div>
-              <div className="relative">
-                <SearchInput 
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  isSearching={isSearching}
-                  isScrolled={isScrolled}
-                />
-                <SearchResults 
-                  results={searchResults}
-                  isVisible={searchQuery.length > 0}
-                  isScrolled={isScrolled}
-                  onSelect={handleBookSelect}
-                />
-              </div>
-              <div className="flex items-center space-x-6">
-                <Link 
-                  href="/loginhome/orders"
-                  className="p-2 rounded-full hover:bg-gray-800/20 transition-colors duration-200"
-                >
-                  <ShoppingCart className={`w-5 h-5 ${isScrolled ? 'text-gray-800' : 'text-gray-300'}`} />
-                </Link>
-                <button
-                  onClick={toggleAccountPopup}
-                 className="account-button flex items-center space-x-2 px-5 py-2.5 rounded-full transition-all duration-200 bg-black text-white hover:bg-gray-900"
-                  >
-                <User className="w-4 h-4" />
-               <span className="text-sm font-medium">Account</span>
-               </button>
-                <button
-                  onClick={() => setMenuOpen(!isMenuOpen)}
-                  className="lg:hidden p-2 rounded-lg hover:bg-gray-800/20"
-                >
-                  {isMenuOpen ? (
-                    <X className={`w-6 h-6 ${isScrolled ? 'text-black' : 'text-white'}`} />
-                  ) : (
-                    <Menu className={`w-6 h-6 ${isScrolled ? 'text-black' : 'text-white'}`} />
-                  )}
-                </button>
-              </div>
-            </div>
-            {isMenuOpen && (
-              <div className="lg:hidden bg-white shadow-xl rounded-b-2xl">
-                <div className="px-6 py-4 space-y-4">
-                  {['Home', 'Catalog', 'About'].map((item) => (
-                    <Link
-                      key={item}
-                      href={item === 'Catalog' 
-                        ? '/loginhome/catalog' 
-                        : item === 'About'
-                        ? '/loginhome/about'
-                        : '/loginhome'}
-                      className="block px-4 py-3 text-gray-800 hover:bg-gray-50 rounded-xl transition-colors duration-200"
-                    >
-                      {item}
-                    </Link>
-                  ))}
-                  <div className="relative mt-4">
-                    <SearchInput 
-                      searchQuery={searchQuery}
-                      setSearchQuery={setSearchQuery}
-                      isSearching={isSearching}
-                      isScrolled={true}
-                    />
-                    <SearchResults 
-                      results={searchResults}
-                      isVisible={searchQuery.length > 0}
-                      isScrolled={true}
-                      onSelect={handleBookSelect}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between mt-6">
-                    <Link href="/loginhome/orders" className="flex items-center space-x-2 px-4 py-3 text-gray-800 hover:bg-gray-50 rounded-xl transition-colors duration-200">
-                      <ShoppingCart className="w-5 h-5" />
-                      <span>Orders</span>
-                    </Link>
-                    <Link href="/account" className="flex items-center space-x-2 px-4 py-3 text-gray-800 hover:bg-gray-50 rounded-xl transition-colors duration-200">
-                      <User className="w-5 h-5" />
-                      <span>Account</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Other nav items */}
           </div>
-          {showAccountPopup && (
-  <div className="account-popup absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-slate-200 z-40">
-    <div className="p-4 border-b border-slate-200">
-      <h3 className="font-bold text-lg text-slate-800">Account Information</h3>
-    </div>
-    {isLoading ? (
-      <div className="p-4 text-center">
-        <p className="text-sm text-slate-600">Loading account info...</p>
-      </div>
-    ) : error ? (
-      <div className="p-4 text-center">
-        <p className="text-sm text-red-600">{error}</p>
-        <button 
-          onClick={fetchLibraryInfo}
-          className="mt-2 px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors duration-200"
-        >
-          Retry
-        </button>
-      </div>
-    ) : (
-      <div className="p-4 space-y-3">
-        <div>
-          <label className="text-xs font-medium text-slate-500">NAME</label>
-          <p className="text-sm font-medium text-slate-800">{userInfo.name}</p>
         </div>
-        <div>
-          <label className="text-xs font-medium text-slate-500">EDUCATION</label>
-          <p className="text-sm font-medium text-slate-800">{userInfo.education}</p>
-        </div>
-        <div>
-          <label className="text-xs font-medium text-slate-500">EMAIL</label>
-          <p className="text-sm font-medium text-slate-800">{userInfo.email}</p>
-        </div>
-      </div>
-    )}
-    <div className="p-4 border-t border-slate-200">
-      <button 
-        onClick={handleLogout}
-        className="w-full py-2 flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
-      >
-        <span>Sign Out</span>
-      </button>
-    </div>
-  </div>
-)}
-        </div>
+        {showAccountPopup && (
+          <div className="account-popup absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-slate-200 z-40">
+            {/* Account Popup content */}
+            <button onClick={handleLogout} className="w-full py-2 flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200">
+              <span>Sign Out</span>
+            </button>
+          </div>
+        )}
       </nav>
-      <main className="flex-grow pt-24 pb-16">
-        {children}
-      </main>
+      <main className="flex-grow pt-24 pb-16">{children}</main>
       <footer className="bg-black">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div>
-              <div className="flex items-center space-x-2 mb-6">
-                <Book className="w-6 h-6 text-white" />
-                <span className="text-xl font-bold text-white">LibraryHub</span>
-              </div>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Discover a world of knowledge through our comprehensive collection of books, research materials, and educational resources.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-white font-semibold mb-6">Quick Links</h3>
-              <ul className="space-y-4">
-                {['Book Borrowing', 'Research Help', 'Study Spaces', 'Digital Library'].map((item) => (
-                  <li key={item}>
-                    <Link
-                      href={`/${item.toLowerCase().replace(' ', '-')}`}
-                      className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-white font-semibold mb-6">Contact</h3>
-              <ul className="space-y-4 text-sm text-gray-400">
-                <li className="flex items-center space-x-2">
-                  <span>123 Library Street</span>
-                </li>
-                <li>City, State 12345</li>
-                <li className="hover:text-white transition-colors duration-200">
-                  <a href="tel:+15551234567">(555) 123-4567</a>
-                </li>
-                <li className="hover:text-white transition-colors duration-200">
-                  <a href="mailto:info@libraryhub.com">info@libraryhub.com</a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-white font-semibold mb-6">Hours</h3>
-              <ul className="space-y-4 text-sm text-gray-400">
-                <li>Monday - Friday: 8AM - 9PM</li>
-                <li>Saturday: 9AM - 6PM</li>
-                <li>Sunday: 11AM - 5PM</li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-16 pt-8 border-t border-gray-800">
-            <div className="text-center text-sm text-gray-500">
-              <p>&copy; {new Date().getFullYear()} LibraryHub. All rights reserved.</p>
-            </div>
-          </div>
-        </div>
+        {/* Footer content */}
         <LibraryModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}

@@ -1,10 +1,10 @@
 import React from 'react';
-import Login from './login';
+import LoginComponent from './login/page';  // Update the import path and rename for clarity
 
 export default function Page() {
   return (
     <div>
-      <Login />
+      <LoginComponent />
     </div>
   );
 }

@@ -254,8 +254,6 @@ const ManageBooks = () => {
 
   // Get status text based on stock and borrowed count
   const getStatusText = (book) => {
-    const borrowCount = borrowedBooks[book._id] || 0;
-
     if (book.stock <= 0) {
       return 'Unavailable';
     } else if (book.stock <= 3) {

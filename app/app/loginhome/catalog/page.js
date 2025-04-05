@@ -1,7 +1,7 @@
-'use client';
-import React from 'react';
-import { useState, useEffect } from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 import { Search, Book as BookIcon } from 'lucide-react';
 
 const Catalog = () => {
@@ -90,11 +90,14 @@ const Catalog = () => {
             >
               <div className="aspect-w-3 aspect-h-4 bg-gray-200">
                 {book.imgSrc ? (
-                  <img
-                    src={book.imgSrc}
-                    alt={book.title}
-                    className="object-cover w-full h-full"
-                  />
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={book.imgSrc}
+                      alt={book.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <BookIcon className="h-16 w-16 text-gray-400" />

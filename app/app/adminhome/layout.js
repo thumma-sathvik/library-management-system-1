@@ -20,7 +20,6 @@ import '../globals.css';
 import axios from 'axios';
 import Notification from './Notification/page';
 import { usePathname } from 'next/navigation';
-import Image from 'next/image';
 
 const AdminLayout = ({ children }) => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);

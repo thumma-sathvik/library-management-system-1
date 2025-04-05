@@ -1,12 +1,11 @@
 'use client'
-import AdminLayout from '../adminhome/layout';
 
-const AdminRoutesLayout = ({ children }) => {
+const AdminLayout = ({ children }) => {
   return (
-    <AdminLayout>
+    <div>
       {children}
-    </AdminLayout>
+    </div>
   );
 };
 
-export default AdminRoutesLayout;
+export default AdminLayout;

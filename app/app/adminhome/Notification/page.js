@@ -41,13 +41,13 @@ const Notification = () => {
   }, []);
 
   useEffect(() => {
-    if (adminId) {
-      fetchNotifications();
-      // Poll for notifications every minute once adminId is available
-      const interval = setInterval(fetchNotifications, 60000);
-      return () => clearInterval(interval);
-    }
-  }, [adminId, fetchNotifications]); // Add fetchNotifications to the dependency array
+  if (adminId) {
+    fetchNotifications();
+    // Poll for notifications every minute once adminId is available
+    const interval = setInterval(fetchNotifications, 60000);
+    return () => clearInterval(interval);
+  }
+}, [adminId, fetchNotifications]); // Add fetchNotifications to the dependency array
 
 const handleDelete = async (notificationId) => {
   try {

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 
-const Login = () => {
+const LoginComponent = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -332,8 +332,14 @@ const Login = () => {
         </svg>
         <span>Secure, encrypted connection</span>
       </div>
+      <Image 
+        src="/example.png" 
+        alt="Example" 
+        width={100} 
+        height={100} 
+      />
     </div>
   );
 };
 
-export default Login;
+export default LoginComponent;

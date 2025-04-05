@@ -68,15 +68,7 @@ const AddNewBook = () => {
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
   const [success, setSuccess] = useState(false);
-  const [formTouched, setFormTouched] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
-
-  // Track if form has been touched to show validation hints
-  useEffect(() => {
-    if (bookData.title || bookData.author || bookData.category) {
-      setFormTouched(true);
-    }
-  }, [bookData.title, bookData.author, bookData.category]);
 
   // Validate form fields
   const validateForm = () => {
