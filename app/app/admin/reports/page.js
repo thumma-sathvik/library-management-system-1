@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { 
-  BookOpen, Users, Star, BarChart as BarChartIcon, LineChart as LineChartIcon, 
-  TrendingUp, Library, LayoutGrid, ChevronRight
+  LineChart as LineChartIcon,
+  Library, 
+  LayoutGrid
 } from 'lucide-react';
 import axios from 'axios';
 import {
@@ -13,7 +14,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
   Line,
   PieChart,
   Pie,
@@ -21,7 +21,6 @@ import {
   Legend,
   Area,
   AreaChart,
-  ComposedChart,
 } from 'recharts';
 
 const Reports = () => {

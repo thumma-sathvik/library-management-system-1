@@ -6,7 +6,7 @@ import {
   UserCircle, ArrowRight, Clock, GraduationCap, Phone, Mail, 
   ChevronDown, ChevronUp, AlertTriangle
 } from 'lucide-react';
-import Link from 'next/link';
+
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -155,20 +155,7 @@ const ManageUsers = () => {
       : `${diffDays} day${diffDays !== 1 ? 's' : ''} remaining`;
   };
 
-  // Toast notification helper
-  const showToast = (message, type = 'success') => {
-    const toast = document.createElement('div');
-    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-500 ${
-      type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-    }`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      setTimeout(() => document.body.removeChild(toast), 500);
-    }, 3000);
-  };
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
