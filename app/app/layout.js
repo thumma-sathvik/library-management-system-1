@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css"; // Make sure globals.css is correctly imported
 
 // Initialize the Geist font and Geist_Mono font with variables
@@ -12,6 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"], // Include specific subsets
 });
 
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
+
 // Metadata for the app (title, description)
 export const metadata = {
   title: "Create Next App",
@@ -21,9 +26,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children} {/* Render children (page content) */}
-      </body>
+      <body className={`${inter.className} antialiased`}>{children}</body>
     </html>
   );
 }
