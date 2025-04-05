@@ -27,6 +27,7 @@ const SearchResults = ({ results = [], isVisible, isScrolled, onSelect }) => {
             key={book.id || index} 
             className="group hover:bg-gray-50 transition-colors duration-200"
             role="option"
+            aria-selected={false} // Add this line
             tabIndex={0}
             onClick={() => onSelect && onSelect(book)}
             onKeyDown={(e) => e.key === 'Enter' && onSelect && onSelect(book)}
@@ -290,7 +291,7 @@ const LibraryModal = ({ isOpen, onClose, libraries, selectedBook, onBorrowFromLi
   );
 };
 
-const BookCard = ({ id, adminId, title, price, rating, imgSrc, bestseller, description, isBorrowed, onCardClick }) => (
+export const BookCard = ({...props}) => (
   <div 
     className="w-[300px] bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
     onClick={() => onCardClick(title, id, adminId)}
@@ -352,9 +353,7 @@ const Layout = ({ children }) => {
   const [showAccountPopup, setShowAccountPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
-  const [isClient, setIsClient] = useState(false);
 
   // Detect client-side once mounted
   useEffect(() => {
@@ -535,29 +534,6 @@ const handleBorrowFromLibrary = async (selectedBook, libraryId, adminId) => {
       console.error('Error during logout:', error);
     }
   };
-
-const handleCardClick = async (bookTitle, bookId, adminId) => {
-  try {
-    const response = await axios.get(`http://localhost:3002/libraries/${bookTitle}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      withCredentials: true,
-    });
-    
-    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-      // Set the selectedBook as the first returned book object (which contains the proper _id)
-      setLibraries(response.data);
-      setSelectedBook(response.data[0]);
-      setIsModalOpen(true);
-    } else {
-      throw new Error('No library information available');
-    }
-  } catch (error) {
-    console.error('Error fetching libraries:', error);
-    alert('Error fetching library information. Please try again.');
-  }
-};
 
   return (
     <div className="min-h-screen flex flex-col bg-zinc-50">

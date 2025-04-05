@@ -115,7 +115,7 @@ const Login = () => {
         {/* Signup Link */}
         <div className="flex items-center justify-center mt-4">
           <Link href='./adminsignup'>
-            <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Don't have an account? Sign up</button>
+            <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Don&apos;t have an account? Sign up</button>
           </Link>
         </div>
       </div>

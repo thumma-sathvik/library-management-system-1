@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { MapPin, Clock, Phone, Building2, Star, ChevronRight, Loader2, BookOpen, XCircle, CircleCheck, AlertCircle } from 'lucide-react';
+import { MapPin, Clock, Phone, Building2, Star, Loader2, BookOpen, XCircle, CircleCheck, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
 
 axios.defaults.withCredentials = true;
 
@@ -13,9 +14,11 @@ const BookCard = ({ id, adminId, title, price, rating, imgSrc, bestseller, descr
     onClick={() => onCardClick(title, id, adminId)}
   >
     <div className="relative overflow-hidden rounded-t-xl">
-      <img
+      <Image
         src={imgSrc || "/api/placeholder/300/220"}
         alt={title}
+        width={300}
+        height={220}
         className="w-full h-[220px] object-cover transition-transform duration-300 hover:scale-105"
       />
       {bestseller && (
@@ -60,7 +63,6 @@ const LibraryModal = ({ isOpen, onClose, libraries, selectedBook, onBorrowFromLi
   const [error, setError] = useState(null);
   const [locations, setLocations] = useState({});
   const [activeLibrary, setActiveLibrary] = useState(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
   
   useEffect(() => {
     const fetchLocations = async () => {

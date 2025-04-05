@@ -6,12 +6,9 @@ import {
   Users, 
   History, 
   BarChart2, 
-  Settings, 
   LogOut, 
   ChevronDown,
   Menu as MenuIcon,
-  Bell,
-  User,
   X as CloseIcon,
   ChevronLeft,
   ChevronRight,
@@ -26,11 +23,9 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 const AdminLayout = ({ children }) => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [admin, setAdmin] = useState(null);
   const [showAccountPopup, setShowAccountPopup] = useState(false);
   const [libraryInfo, setLibraryInfo] = useState({
     name: "Loading...",

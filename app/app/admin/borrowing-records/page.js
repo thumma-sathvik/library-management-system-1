@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Filter, User, BookOpen, Loader2, AlertCircle, RotateCcw, BookX, BookCheck } from 'lucide-react';
+import { Search, User, BookOpen, Loader2, AlertCircle, RotateCcw, BookX, BookCheck } from 'lucide-react';
 
 const BorrowingRecords = () => {
   const [orders, setOrders] = useState([]);

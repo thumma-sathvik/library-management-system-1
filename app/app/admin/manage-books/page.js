@@ -17,8 +17,6 @@ const ManageBooks = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [updatingStock, setUpdatingStock] = useState(null);
-  const [stockValues, setStockValues] = useState({});
-  const [originalStockValues, setOriginalStockValues] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
   const [stockAction, setStockAction] = useState('reduce'); // 'reduce', 'unavailable' or 'available'
@@ -59,16 +57,6 @@ const ManageBooks = () => {
 
         console.log('Filtered books:', filteredBooks);
 
-        // Initialize stock values and keep original values for comparison
-        const initialStockValues = {};
-        filteredBooks.forEach(book => {
-          if (book._id) {
-            initialStockValues[book._id] = book.stock;
-          }
-        });
-
-        setStockValues(initialStockValues);
-        setOriginalStockValues(initialStockValues);
         setBooks(filteredBooks);
 
         // Fetch borrowed books data for this admin
@@ -289,17 +277,6 @@ const ManageBooks = () => {
       toast.style.opacity = '0';
       setTimeout(() => document.body.removeChild(toast), 500);
     }, 3000);
-  };
-
-  // Format date from timestamp
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
   };
 
   // Generate star rating display

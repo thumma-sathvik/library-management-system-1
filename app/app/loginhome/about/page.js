@@ -77,7 +77,7 @@ export default function About() {
             
             <h3 className="text-xl font-semibold text-gray-800 mt-8 mb-3">Coming Soon</h3>
             <p className="text-gray-700 mb-4">
-              We're constantly working to improve our system. Future enhancements include:
+              We&apos;re constantly working to improve our system. Future enhancements include:
             </p>
             <ul className="list-disc list-inside text-gray-600 space-y-2 pl-4">
               <li>Library inventory management tools</li>

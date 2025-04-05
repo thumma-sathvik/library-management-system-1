@@ -2,7 +2,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Filter, Book as BookIcon } from 'lucide-react';
+import { Search, Book as BookIcon } from 'lucide-react';
 
 const Catalog = () => {
   const [books, setBooks] = useState([]);

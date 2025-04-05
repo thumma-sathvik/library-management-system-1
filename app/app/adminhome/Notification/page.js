@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Bell, X, Trash2, BookOpen, Clock, User, Trash } from 'lucide-react';
 import axios from 'axios';
 
@@ -21,7 +21,7 @@ const Notification = () => {
     }
   };
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       if (!adminId) return; // Wait for adminId to be fetched
       // Use the correct endpoint with adminId as a query parameter
@@ -34,7 +34,7 @@ const Notification = () => {
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
-  };
+  }, [adminId]); // Add adminId as a dependency
 
   useEffect(() => {
     fetchAdmin();
@@ -47,7 +47,7 @@ const Notification = () => {
       const interval = setInterval(fetchNotifications, 60000);
       return () => clearInterval(interval);
     }
-  }, [adminId]);
+  }, [adminId, fetchNotifications]); // Add fetchNotifications to the dependency array
 
 const handleDelete = async (notificationId) => {
   try {

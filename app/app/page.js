@@ -1,15 +1,10 @@
 import React from 'react';
-import Login from './login/page'
-import Front from './Front/page';
+import Login from './login';
 
-const Main = () => {
+export default function Page() {
   return (
-    <main>
-      <Front />
-      
-    
-    </main>
+    <div>
+      <Login />
+    </div>
   );
-};
-
-export default Main;
+}

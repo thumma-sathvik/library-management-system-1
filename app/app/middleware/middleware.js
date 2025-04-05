@@ -19,13 +19,11 @@ export default async function middleware(req) {
     return NextResponse.redirect(new URL('/Userlogin', req.url));
   }
 
-  
-
   try {
     await jwtVerify(cookie.value, secret);
     return NextResponse.next();
   } catch (error) {
-    console.log('Invalid JWT token, redirecting to login');
+    console.log('Invalid JWT token:', error.message);
     return NextResponse.redirect(new URL('/Userlogin', req.url));
   }
 }

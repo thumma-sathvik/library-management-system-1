@@ -1,12 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
 import { 
-  BookOpen, Users, ShoppingCart, BarChart2, 
-  Edit, Trash2, Plus, Search, ArrowRight
+  BookOpen, Users, ShoppingCart, Plus, ArrowRight
 } from 'lucide-react';
 
 // TabPanel Component
@@ -47,7 +45,6 @@ const StatsCard = ({ title, value, icon, linkTo }) => (
 
 // Books Table Component – Updated hover states to match theme
 const BooksTable = ({ books }) => {
-  const router = useRouter();
   const displayedBooks = books.slice(0, 3); // Now displaying only 3 records
   
   return (
@@ -355,7 +352,6 @@ const UsersTable = ({ users, orders }) => {
 
 // Main AdminDashboard Component
 const AdminDashboard = () => {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [books, setBooks] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -468,7 +464,9 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Header with greeting */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome back, {admin?.Library_name || 'Admin'}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Welcome back, {admin?.Library_name || 'Admin'}
+          </h1>
           <p className="text-gray-600">Here's what's happening with your library today</p>
         </div>
 

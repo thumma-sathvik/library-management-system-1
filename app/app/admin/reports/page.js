@@ -41,7 +41,7 @@ const Reports = () => {
     fetchAnalytics();
   }, [timeFilter]);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get(`http://localhost:3002/analytics?timeframe=${timeFilter}`, {
@@ -53,7 +53,11 @@ const Reports = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeFilter]); // Add timeFilter as a dependency since it's used inside
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]); // Now fetchAnalytics is memoized and can be safely used as a dependency
 
   // Format data for better visualization
   const formatTrendsData = () => {
@@ -73,14 +77,6 @@ const Reports = () => {
     
     return movingAvg;
   };
-
-  const memoizedFetchAnalytics = useCallback(() => {
-    fetchAnalytics();
-  }, []); // Add dependencies if fetchAnalytics uses any props or state
-
-  useEffect(() => {
-    memoizedFetchAnalytics();
-  }, [memoizedFetchAnalytics]);
 
   // Enhanced loading state
   if (loading) {

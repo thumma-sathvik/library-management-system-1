@@ -1,7 +1,8 @@
 'use client'
 import axios from 'axios'
 import React, { useState, useEffect } from 'react'
-import { ChevronDown, ChevronUp, Search, Calendar, BookOpen, Clock, Library, Filter, RefreshCw, Eye, ArrowRight } from 'lucide-react'
+import { ChevronDown, ChevronUp, Search, Calendar, BookOpen, Clock, Library, Filter, RefreshCw, Eye} from 'lucide-react'
+import Image from 'next/image';
 
 const BorrowedBooks = () => {
   const [borrowedBooks, setBorrowedBooks] = useState([]);
@@ -400,9 +401,11 @@ const getBookStatus = (book) => {
                           <div className="flex items-center">
                             <div className="h-12 w-10 flex-shrink-0 overflow-hidden rounded-sm shadow-sm border border-gray-200">
                               {book.bookId?.imageUrl ? (
-                                <img 
+                                <Image 
                                   src={book.bookId.imageUrl} 
                                   alt={book.bookId?.title || 'Book cover'} 
+                                  width={40}
+                                  height={60}
                                   className="h-12 w-10 object-cover"
                                   onError={(e) => {
                                     e.target.onerror = null;
