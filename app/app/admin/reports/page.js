@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   LineChart as LineChartIcon,
   Library, 
@@ -37,27 +37,24 @@ const Reports = () => {
   // Enhanced color palette
   const COLORS = ['#4F46E5', '#06B6D4', '#F59E0B', '#EC4899', '#10B981', '#8B5CF6'];
 
+  // Fix: removed the circular dependency by using a simple useEffect
   useEffect(() => {
-  fetchAnalytics();
-}, [fetchAnalytics]);
+    const fetchAnalytics = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`http://localhost:3002/analytics?timeframe=${timeFilter}`, {
+          withCredentials: true
+        });
+        setStats(response.data);
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchAnalytics = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`http://localhost:3002/analytics?timeframe=${timeFilter}`, {
-        withCredentials: true
-      });
-      setStats(response.data);
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [timeFilter]); // Add timeFilter as a dependency since it's used inside
-
-  useEffect(() => {
     fetchAnalytics();
-  }, [fetchAnalytics]); // Now fetchAnalytics is memoized and can be safely used as a dependency
+  }, [timeFilter]); // Only time filter as dependency
 
   // Format data for better visualization
   const formatTrendsData = () => {
