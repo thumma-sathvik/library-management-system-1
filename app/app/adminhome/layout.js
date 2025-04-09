@@ -21,6 +21,7 @@ import axios from 'axios';
 import Notification from './Notification/page';
 import { usePathname } from 'next/navigation';
 
+
 const AdminLayout = ({ children }) => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
@@ -206,7 +207,7 @@ const AdminLayout = ({ children }) => {
                   <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white font-medium text-sm">
                     {getLibraryInitial()}
                   </div>
-                  <span className="hidden md:inline text-sm font-medium text-gray-800">{
+                  <span className="md:inline text-sm font-medium text-gray-800 hidden">{
                     libraryInfo.name !== "Loading..." && libraryInfo.name !== "Error loading" 
                       ? libraryInfo.name.split(' ')[0] 
                       : "Account"
@@ -327,7 +328,7 @@ const AdminLayout = ({ children }) => {
         {!isMobileView && (
           <button
             onClick={() => setSidebarCollapsed(!isSidebarCollapsed)}
-            className="absolute -right-3 top-6 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-100 transition-colors hidden md:flex"
+            className="absolute -right-3 top-6 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-sm items-center justify-center hover:bg-gray-100 transition-colors md:flex hidden"
           >
             {isSidebarCollapsed ? (
               <ChevronRight className="w-3 h-3 text-gray-600" />
