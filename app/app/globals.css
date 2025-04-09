@@ -1,5 +1,5 @@
 @tailwind base;
-npm install -D tailwindcss
+@tailwind components;
 @tailwind utilities;
 
 :root {
@@ -17,6 +17,10 @@ npm install -D tailwindcss
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist), sans-serif;
   padding: 0;
+}
+
+code {
+  font-family: var(--font-geist-mono), monospace;
 }
