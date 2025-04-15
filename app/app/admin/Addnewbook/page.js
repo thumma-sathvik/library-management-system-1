@@ -553,7 +553,7 @@ const AddNewBook = () => {
                   <div className="space-y-2 group">
                     <label className="text-sm font-medium text-gray-800 flex items-center group-hover:text-emerald-600 transition-colors">
                       <DollarSign size={16} className="mr-1.5 text-emerald-600" />
-                      Price ($) <span className="text-red-500 ml-1">*</span>
+                      Price (₹) <span className="text-red-500 ml-1">*</span>
                     </label>
                     <input
                       id="price"

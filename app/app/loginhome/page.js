@@ -36,7 +36,7 @@ const BookCard = ({ id, adminId, title, price, rating, imgSrc, bestseller, descr
         <p className="text-gray-600 text-sm line-clamp-2 mb-3">{description}</p>
       )}
       <div className="flex justify-between items-center">
-        {rating && (
+        {/* {rating && (
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -45,10 +45,10 @@ const BookCard = ({ id, adminId, title, price, rating, imgSrc, bestseller, descr
               />
             ))}
             <span className="ml-2 text-sm font-medium text-gray-600">({rating}.0)</span>
-          </div>
-        )}
+          </div> */}
+        {/* )} */}
         {price && (
-          <span className="text-xl font-bold text-gray-900">${price}</span>
+          <span className="text-xl font-bold text-gray-900">₹{price}</span>
         )}
       </div>
     </div>

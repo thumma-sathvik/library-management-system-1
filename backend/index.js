@@ -297,37 +297,39 @@ app.post('/Userlogin', async (req, res) => {
 // Admin authentication endpoints
 app.post('/Adminlogin', async (req, res) => {
   const { email, password } = req.body;
-
+  
   // Log secret for debugging
   console.log('JWT Secret:', process.env.JWT_SECRET);
-
+  
   try {
     const admin = await Admin.findOne({ email });
-
+    
     if (!admin) {
       return res.status(404).json({ message: "User not found" });
     }
-
+    
     // Add detailed logging
     console.log('Admin found:', admin);
     console.log('Password match:', admin.password === password);
-
+    
     if (admin.password === password) {
       const token = createToken(admin._id);
       
       // Log token creation
       console.log('Generated Token:', token);
-
+      
       res.cookie('jwt', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: maxAge * 1000
       });
-
+      
+      // Include the admin ID in the response
       return res.status(200).json({
         message: "Login successful",
-        user: { name: admin.name, email: admin.email }
+        user: { name: admin.name, email: admin.email },
+        adminId: admin._id // Add this to return admin ID to client
       });
     } else {
       return res.status(401).json({ message: "Invalid credentials" });
