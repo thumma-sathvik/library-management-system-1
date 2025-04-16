@@ -1,32 +1,6 @@
 'use client'
-import { useState } from 'react';
-
-const backgrounds = [
-  {
-    id: 1,
-    url: "https://images.unsplash.com/photo-1507842217343-583bb7270b66",
-    name: "Classic Library"
-  },
-  {
-    id: 2, 
-    url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570",
-    name: "Modern Library"
-  },
-  {
-    id: 3,
-    url: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f",
-    name: "Study Space"
-  },
-  {
-    id: 4,
-    url: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da",
-    name: "Library Interior"
-  }
-];
 
 const Front = () => {
-  const [currentBg, setCurrentBg] = useState(0);
-  
   const handleNavigation = (path) => {
     window.location.href = path;
   };
@@ -40,23 +14,12 @@ const Front = () => {
         </h1>
       </header>
 
-      {/* Background Selector */}
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
-        {backgrounds.map((bg, index) => (
-          <button
-            key={bg.id}
-            onClick={() => setCurrentBg(index)}
-            className={`w-3 h-3 rounded-full ${currentBg === index ? 'bg-white' : 'bg-white/50'}`}
-          />
-        ))}
-      </div>
-
       {/* Main content */}
       <main className="relative min-h-[calc(100vh-88px)]">
         {/* Background image with overlay */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
-          style={{ backgroundImage: `url('${backgrounds[currentBg].url}')` }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1507842217343-583bb7270b66')" }}
         >
           <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
         </div>
@@ -81,7 +44,7 @@ const Front = () => {
               </p>
               <button 
                 onClick={() => handleNavigation('/login')}
-                className="w-full py-4 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-xl text-lg font-medium transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full py-4 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-xl text-lg font-medium transition-all duration-300 hover:from-gray-800 hover:to-gray-900 hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 Login as Student
               </button>

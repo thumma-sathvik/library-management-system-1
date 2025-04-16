@@ -36,89 +36,116 @@ const Signup = () => {
     }
   };
 
+  const validateForm = () => {
+    if (!formData.Library_name.trim()) return 'Library name is required';
+    if (!formData.address.trim()) return 'Address is required';
+    if (!formData.email.trim()) return 'Email is required';
+    if (!formData.mobile || formData.mobile.length !== 10) return 'Valid 10-digit mobile number is required';
+    if (!formData.password) return 'Password is required';
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setError('');
     setLoading(true);
 
-    if (!formData.Library_name || !formData.address || !formData.email || !formData.mobile || !formData.password) {
-      setError('All fields are required');
-      setLoading(false);
-      return;
-    }
-
-    if (!/^\d{10}$/.test(formData.mobile)) {
-      setError('Please enter a valid 10-digit mobile number');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await axios.post('http://localhost:3002/adminsignup', formData);
+      console.log('Submitting form data:', formData); // Debug log
+
+      const response = await axios.post('http://localhost:3002/adminsignup', formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       
-      if (response.status === 201) {
-        // Set admin ID from response and show location prompt
+      console.log('Signup response:', response.data); // Debug log
+
+      if (response.data && response.data.adminId) {
         setAdminId(response.data.adminId);
         setShowLocationPrompt(true);
+      } else {
+        throw new Error('No adminId received');
       }
     } catch (error) {
+      console.error('Signup error details:', error.response || error); // Detailed error log
       setError(
         error.response?.data?.message || 
-        'An error occurred during signup'
+        error.message || 
+        'Failed to create account'
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGetLocation = () => {
-    setLocationStatus('Detecting your location...');
-    
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const locationData = {
-            adminId: adminId,
-            name: formData.Library_name,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          };
+const handleGetLocation = () => {
+  if (!adminId) {
+    setLocationStatus('Error: Please complete signup first');
+    return;
+  }
 
-          try {
-            const token = localStorage.getItem('adminToken'); // Assuming token is stored after signup
-            
-            const response = await axios.post(
-              'http://localhost:3002/save-location', 
-              locationData,
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            
-            if (response.status === 200) {
-              setLocationStatus('Location saved successfully!');
-              // Wait briefly so user can see success message
-              setTimeout(() => {
-                router.push('/adminlogin');
-              }, 1500);
+  setLocationStatus('Detecting your location...');
+  
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        console.log('Location obtained:', position.coords); // Debug log
+
+        const locationData = {
+          adminId,
+          name: formData.Library_name,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
+
+        try {
+          console.log('Sending location data:', locationData); // Debug log
+          
+          const response = await axios.post(
+            'http://localhost:3002/save-location', 
+            locationData,
+            {
+              headers: {
+                'Content-Type': 'application/json'
+              }
             }
-          } catch (error) {
-            setLocationStatus('Failed to save location. Please try again later.');
-            console.error('Error saving location:', error);
-          }
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          setLocationStatus('Unable to get location. Please allow location access.');
-        }
-      );
-    } else {
-      setLocationStatus('Geolocation is not supported by your browser');
-    }
-  };
+          );
+          
+          console.log('Location save response:', response.data); // Debug log
 
-  const skipLocation = () => {
-    alert('You can set your location later from your profile settings.');
-    router.push('/adminlogin');
-  };
+          if (response.status === 200) {
+            setLocationStatus('Location saved successfully!');
+            setTimeout(() => {
+              router.push('/adminlogin');
+            }, 1500);
+          }
+        } catch (error) {
+          console.error('Location save error:', error.response || error);
+          setLocationStatus('Failed to save location. Please try again.');
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        setLocationStatus('Please enable location access in your browser settings.');
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      }
+    );
+  } else {
+    setLocationStatus('Your browser does not support geolocation');
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
@@ -281,25 +308,18 @@ const Signup = () => {
 
               <div className="rounded-md p-4 bg-blue-50 text-blue-800 text-sm">
                 <p>
-                  Sharing your library's location will help users discover your 
-                  library on the map. We only use this information to display your 
-                  library's location to users.
+                  Your library's location is required to complete the registration. 
+                  This helps users discover your library on the map. We only use this 
+                  information to display your library's location to users.
                 </p>
               </div>
 
-              <div className="flex flex-col space-y-4">
+              <div className="flex flex-col">
                 <button
                   onClick={handleGetLocation}
                   className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all duration-200 shadow-lg hover:shadow-black/30"
                 >
                   Share My Location
-                </button>
-                
-                <button
-                  onClick={skipLocation}
-                  className="w-full flex justify-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
-                >
-                  Skip For Now
                 </button>
               </div>
             </div>

@@ -297,39 +297,37 @@ app.post('/Userlogin', async (req, res) => {
 // Admin authentication endpoints
 app.post('/Adminlogin', async (req, res) => {
   const { email, password } = req.body;
-  
+
   // Log secret for debugging
   console.log('JWT Secret:', process.env.JWT_SECRET);
-  
+
   try {
     const admin = await Admin.findOne({ email });
-    
+
     if (!admin) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Add detailed logging
     console.log('Admin found:', admin);
     console.log('Password match:', admin.password === password);
-    
+
     if (admin.password === password) {
       const token = createToken(admin._id);
       
       // Log token creation
       console.log('Generated Token:', token);
-      
+
       res.cookie('jwt', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: maxAge * 1000
       });
-      
-      // Include the admin ID in the response
+
       return res.status(200).json({
         message: "Login successful",
-        user: { name: admin.name, email: admin.email },
-        adminId: admin._id // Add this to return admin ID to client
+        user: { name: admin.name, email: admin.email }
       });
     } else {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -346,43 +344,18 @@ app.post('/adminsignup', async (req, res) => {
   const { Library_name, address, email, mobile, password } = req.body;
 
   try {
-    // Log the received data for debugging
-    console.log('Received signup data:', { Library_name, address, email, mobile, password });
-
     // Validate required fields
     if (!Library_name || !address || !email || !mobile || !password) {
       return res.status(400).json({ 
-        message: "All fields are required",
-        missingFields: Object.entries({
-          Library_name,
-          address,
-          email,
-          mobile,
-          password
-        }).filter(([_, value]) => !value).map(([key]) => key)
-      });
-    }
-
-    // Validate mobile number format
-    if (!/^\d{10}$/.test(mobile)) {
-      return res.status(400).json({ 
-        message: "Invalid mobile number format. Must be 10 digits." 
+        message: 'All fields are required' 
       });
     }
 
     // Check if admin already exists
-    const existingAdmin = await Admin.findOne({ 
-      $or: [
-        { email: email.toLowerCase() },
-        { mobile: mobile }
-      ]
-    });
-
+    const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
       return res.status(409).json({ 
-        message: existingAdmin.email === email.toLowerCase() 
-          ? "Email already registered" 
-          : "Mobile number already registered"
+        message: 'Email already registered' 
       });
     }
 
@@ -391,22 +364,16 @@ app.post('/adminsignup', async (req, res) => {
       Library_name: Library_name.trim(),
       address: address.trim(),
       email: email.toLowerCase().trim(),
-      mobile: mobile,  // Store the mobile number
+      mobile,
       password
     });
 
-    // Log the admin object before saving
-    console.log('Admin object before save:', newAdmin);
-
     const savedAdmin = await newAdmin.save();
-    
-    // Log the saved admin object
-    console.log('Saved admin:', savedAdmin);
+    console.log('New admin created:', savedAdmin); // Debug log
 
-    // Create JWT token
+    // Create and set JWT token
     const token = createToken(savedAdmin._id);
     
-    // Set JWT cookie
     res.cookie('jwt', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -417,28 +384,18 @@ app.post('/adminsignup', async (req, res) => {
     // Send success response
     return res.status(201).json({
       message: "Admin created successfully",
+      adminId: savedAdmin._id,
       admin: {
-        id: savedAdmin._id,
         Library_name: savedAdmin.Library_name,
         email: savedAdmin.email,
-        mobile: savedAdmin.mobile  // Include mobile in response
+        mobile: savedAdmin.mobile
       }
     });
 
   } catch (error) {
-    console.error('Signup error:', error);
-    
-    // Handle mongoose validation errors
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        message: "Validation error",
-        errors: Object.values(error.errors).map(err => err.message)
-      });
-    }
-
-    // Handle other errors
-    return res.status(500).json({ 
-      message: "Server error",
+    console.error('Admin signup error:', error);
+    res.status(500).json({ 
+      message: 'Error creating admin account',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -921,15 +878,24 @@ app.get('/borrowing-records', verifyToken, async (req, res) => {
   }
 });
 // Add location endpoint
-app.post('/save-location', verifyToken, async (req, res) => {
+// Remove verifyToken middleware for initial location save
+app.post('/save-location', async (req, res) => {
   const { adminId, name, latitude, longitude } = req.body;
 
   try {
+    if (!adminId || !name || !latitude || !longitude) {
+      return res.status(400).json({ 
+        message: 'Missing required fields',
+        required: { adminId, name, latitude, longitude }
+      });
+    }
+
     // Find existing location for this admin or create new one
     let location = await Location.findOne({ adminId });
     
     if (location) {
       // Update existing location
+      location.name = name;
       location.latitude = latitude;
       location.longitude = longitude;
       await location.save();
@@ -944,10 +910,19 @@ app.post('/save-location', verifyToken, async (req, res) => {
       await location.save();
     }
 
-    res.status(200).json(location);
+    // Log successful save
+    console.log('Location saved:', location);
+
+    res.status(200).json({
+      message: 'Location saved successfully',
+      location
+    });
   } catch (error) {
     console.error('Error saving location:', error);
-    res.status(500).json({ message: 'Error saving location data' });
+    res.status(500).json({ 
+      message: 'Error saving location data',
+      error: error.message 
+    });
   }
 });
 
