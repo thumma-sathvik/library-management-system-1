@@ -1,5 +1,4 @@
-import { Config } from "tailwindcss";
-
+/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -8,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)'],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
